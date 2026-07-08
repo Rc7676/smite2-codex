@@ -127,6 +127,8 @@
   .chip[data-role="Solo"][aria-pressed="true"]{background:var(--solo);color:#fff}
   .chip[data-role="Jungle"][aria-pressed="true"]{background:var(--jungle)}
   .chip.cat[aria-pressed="true"]{background:var(--gold);color:#241a06}
+  .sortsel{appearance:none;-webkit-appearance:none;cursor:pointer;font-family:inherit;background:var(--panel);border:1px solid var(--line);color:var(--ink-dim);padding:8px 26px 8px 12px;border-radius:999px;font-size:12.5px;font-weight:700;outline:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%238b8fa8' stroke-width='3'><path d='M6 9l6 6 6-6'/></svg>");background-repeat:no-repeat;background-position:right 10px center}
+  .sortsel:focus{border-color:var(--gold-deep)}
 
   .row-between{display:flex;align-items:center;justify-content:space-between;gap:10px}
   .result-meta{font-size:11.5px;color:var(--ink-faint);letter-spacing:.06em;text-transform:uppercase;font-weight:600}
@@ -353,7 +355,14 @@
       <div class="chips" id="classChips"></div>
       <div class="row-between" style="flex-wrap:wrap">
         <span class="result-meta" id="godCount"></span>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;align-items:center">
+          <select id="godSort" class="sortsel" aria-label="Sort gods">
+            <option value="role">By role</option>
+            <option value="name">A–Z</option>
+            <option value="difficulty">Difficulty</option>
+            <option value="familiarity">Familiarity</option>
+            <option value="recent">Recently played</option>
+          </select>
           <button class="chip" id="practiceBtn" style="flex:none">🎲 Practice</button>
           <button class="chip" id="ownedFilter" aria-pressed="false" style="flex:none">✓ Owned only</button>
           <button class="chip" id="playedFilter" data-role="Filter" aria-pressed="false" style="flex:none">◐ Played only</button>
@@ -368,7 +377,7 @@
     <div class="controls">
       <div class="search">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
-        <input id="itemSearch" type="search" placeholder="Search items…" autocomplete="off">
+        <input id="itemSearch" type="search" placeholder="Search items & passives…" autocomplete="off">
       </div>
       <div class="chips" id="itemChips"></div>
       <div class="chips" id="itemAttrChips"></div>
@@ -386,14 +395,16 @@
     <div class="grid" id="trackedGrid"></div>
     <div class="backup">
       <h3>Backup &amp; restore</h3>
-      <p>Your progress lives on this device. Copy the code to save it, or paste one in to restore — handy before clearing your browser or moving phones.</p>
+      <p>Your progress is saved on this device. Download a backup file to keep it safe or move to another phone.</p>
       <div class="btn-row">
-        <button class="btn gold" id="exportBtn">Copy my progress</button>
-        <button class="btn ghost" id="importBtn">Paste to restore</button>
+        <button class="btn gold" id="downloadBtn">⬇ Download backup</button>
+        <button class="btn ghost" id="restoreBtn">⬆ Restore from file</button>
+        <button class="btn ghost" id="exportBtn">Copy code</button>
         <button class="btn ghost" id="resetBtn">Reset all</button>
       </div>
+      <input type="file" id="importFile" accept="application/json,.json" style="display:none">
     </div>
-    <p class="hint">Tip: open this page in Chrome, then <b>⋮ → Add to Home screen</b> to use it like an app, offline.</p>
+    <p class="hint">Your tracking stays on this device. Back up before clearing browser data or switching phones.</p>
   </section>
 
 </div>
@@ -1356,8 +1367,18 @@ var STORE_KEY="smite2-codex-v1";
 var store=load();
 function load(){try{var r=localStorage.getItem(STORE_KEY);var d=r?JSON.parse(r):{};if(!d.gods)d.gods={};if(!d.items)d.items={};return d;}catch(e){return {gods:{},items:{}};}}
 function save(){try{localStorage.setItem(STORE_KEY,JSON.stringify(store));}catch(e){toast("Couldn't save — storage blocked");}}
-function rec(name){if(!store.gods[name])store.gods[name]={played:false,fam:0,notes:"",abil:null,owned:false};return store.gods[name];}
-function godTracked(g){var r=store.gods[g[0]];return r&&(r.played||r.fam>0||r.notes||r.abil||r.owned);}
+function rec(name){if(!store.gods[name])store.gods[name]={played:false,fam:0,notes:"",mnotes:"",abil:null,owned:false,playedAt:0};return store.gods[name];}
+function godTracked(g){var r=store.gods[g[0]];return r&&(r.played||r.fam>0||r.notes||r.mnotes||r.abil||r.owned);}
+function relTime(ts){
+  if(!ts)return "";
+  var s=Math.floor((Date.now()-ts)/1000);
+  if(s<60)return "just now";
+  var m=Math.floor(s/60);if(m<60)return m+"m ago";
+  var h=Math.floor(m/60);if(h<24)return h+"h ago";
+  var d=Math.floor(h/24);if(d<30)return d+"d ago";
+  var mo=Math.floor(d/30);if(mo<12)return mo+"mo ago";
+  return Math.floor(mo/12)+"y ago";
+}
 function has(name){return !!store.gods[name];}
 
 /* ================= HELPERS ================= */
@@ -1380,7 +1401,7 @@ function abilOf(g){
 }
 
 /* ================= FILTdirentERS/UI STATE ================= */
-var gState={role:"All",cls:"All",q:"",playedOnly:false,ownedOnly:false};
+var gState={role:"All",cls:"All",q:"",playedOnly:false,ownedOnly:false,sort:"role"};
 var iState={cat:"All",q:"",attr:"All"};
 
 /* item attribute classification for the stat filter.
@@ -1410,6 +1431,14 @@ function itemAttrMatch(it){
   if(a==="Hybrid"&&(iState.attr==="Strength"||iState.attr==="Intelligence"))return true;
   return false;
 }
+var _isi={};
+function itemSearchText(it){
+  if(_isi[it[0]]!==undefined)return _isi[it[0]];
+  var parts=[it[0],it[1],itemAttr(it)];
+  var d=ITEM_DESC[it[0]];
+  if(d){if(d.passive)parts.push(d.passive);if(d.stats)d.stats.forEach(function(r){parts.push(r[0]);});}
+  var t=parts.join(" ").toLowerCase();_isi[it[0]]=t;return t;
+}
 
 /* ================= GODS VIEW ================= */
 function buildRoleChips(){
@@ -1433,12 +1462,26 @@ function buildClassChips(){
 }
 function syncChips(box,attr,val){Array.prototype.forEach.call(box.children,function(b){b.setAttribute("aria-pressed",b.getAttribute("data-"+ (attr==="cls"?"cls":"role"))===val);});}
 
+var _gsi={};
+function godSearchText(g){
+  if(_gsi[g[0]]!==undefined)return _gsi[g[0]];
+  var parts=[g[0],g[1],g[2],g[3],g[4]||"",g[6]];
+  var full=ABIL_FULL[g[0]];
+  if(full){full.forEach(function(ab){parts.push(ab.n);if(ab.d)parts.push(ab.d);});}
+  else{var c=ABIL[g[0]];if(c)c.forEach(function(ab){parts.push(ab[0]);if(ab[1])parts.push(ab[1]);});}
+  var t=parts.join(" ").toLowerCase();_gsi[g[0]]=t;return t;
+}
 function godMatches(g){
   if(gState.role!=="All"&&g[3]!==gState.role&&g[4]!==gState.role)return false;
   if(gState.cls!=="All"&&g[2]!==gState.cls)return false;
   if(gState.playedOnly&&!(store.gods[g[0]]&&store.gods[g[0]].played))return false;
   if(gState.ownedOnly&&!(store.gods[g[0]]&&store.gods[g[0]].owned))return false;
-  if(gState.q){var q=gState.q.toLowerCase();if((g[0]+" "+g[1]+" "+g[2]+" "+g[3]).toLowerCase().indexOf(q)<0)return false;}
+  if(gState.q){
+    var q=gState.q.toLowerCase();
+    var hit=godSearchText(g).indexOf(q)>=0;
+    if(!hit){var r=store.gods[g[0]];if(r&&(((r.notes||"")+" "+(r.mnotes||"")).toLowerCase().indexOf(q)>=0))hit=true;}
+    if(!hit)return false;
+  }
   return true;
 }
 function godCard(g){
@@ -1461,11 +1504,19 @@ function godCard(g){
   c.onclick=function(){openGod(g);};
   return c;
 }
+function famOf(g){var r=store.gods[g[0]];return r?(r.fam||0):0;}
+function playedAtOf(g){var r=store.gods[g[0]];return r?(r.playedAt||0):0;}
+var SORTERS={
+  name:byName,
+  difficulty:function(a,b){return (a[5]-b[5])||byName(a,b);},
+  familiarity:function(a,b){return (famOf(b)-famOf(a))||byName(a,b);},
+  recent:function(a,b){return (playedAtOf(b)-playedAtOf(a))||byName(a,b);}
+};
 function renderGods(){
   var grid=$("#godGrid");grid.innerHTML="";
   var list=GODS.filter(godMatches);
-  // group by role when All roles
-  if(gState.role==="All"){
+  if(gState.sort==="role"&&gState.role==="All"){
+    // grouped by role
     var groups={};ROLE_ORDER.forEach(function(r){groups[r]=[];});
     list.forEach(function(g){groups[g[3]].push(g);});
     ROLE_ORDER.forEach(function(r){
@@ -1476,7 +1527,8 @@ function renderGods(){
       groups[r].sort(byName).forEach(function(g){grid.appendChild(godCard(g));});
     });
   }else{
-    list.sort(byName).forEach(function(g){grid.appendChild(godCard(g));});
+    var sorter=SORTERS[gState.sort==="role"?"name":gState.sort]||byName;
+    list.slice().sort(sorter).forEach(function(g){grid.appendChild(godCard(g));});
   }
   if(!list.length)grid.appendChild(emptyState("No gods match your filters."));
   $("#godCount").textContent=list.length+" of "+GODS.length+" gods";
@@ -1516,10 +1568,12 @@ function openGod(g){
     '<div class="dt-block">'+
       '<div class="toggle-line"><div class="tl-txt"><strong>Owned</strong><span>Do you own this god?</span></div>'+
       '<label class="switch"><input type="checkbox" id="ownedTog"'+(r.owned?" checked":"")+'><span class="sl"></span></label></div>'+
-      '<div class="toggle-line"><div class="tl-txt"><strong>Played this god</strong><span>Mark gods you\'ve taken into a match</span></div>'+
+      '<div class="toggle-line"><div class="tl-txt"><strong>Played this god</strong><span>'+(r.playedAt?"Last played "+relTime(r.playedAt):"Mark gods you\'ve taken into a match")+'</span></div>'+
       '<label class="switch"><input type="checkbox" id="playedTog"'+(r.played?" checked":"")+'><span class="sl"></span></label></div>'+
       '<h3 style="margin-top:18px">My notes</h3>'+
-      '<textarea class="notes" id="notes" placeholder="Combos, build ideas, matchups to watch, what to practice…">'+esc(r.notes)+'</textarea>'+
+      '<textarea class="notes" id="notes" placeholder="Combos, build ideas, what to practice…">'+esc(r.notes)+'</textarea>'+
+      '<h3 style="margin-top:18px">Matchup &amp; counter notes</h3>'+
+      '<textarea class="notes" id="mnotes" placeholder="Who beats them, who they beat, what to watch for…">'+esc(r.mnotes||"")+'</textarea>'+
     '</div>'+
     // abilities
     '<div class="dt-block">'+
@@ -1540,8 +1594,9 @@ function openGod(g){
     seg.appendChild(b);
   });
   $("#ownedTog").onchange=function(){r.owned=this.checked;save();refreshBadges(g[0]);};
-  $("#playedTog").onchange=function(){r.played=this.checked;save();refreshBadges(g[0]);};
+  $("#playedTog").onchange=function(){r.played=this.checked;if(this.checked)r.playedAt=Date.now();save();refreshBadges(g[0]);};
   $("#notes").oninput=function(){r.notes=this.value;save();};
+  $("#mnotes").oninput=function(){r.mnotes=this.value;save();};
   $("#abilEdit").onclick=function(){editAbil=!editAbil;renderAbil(g);};
   $("#resetGod").onclick=function(){
     if(window.confirm("Reset all your tracking for "+g[0]+"? (owned, played, familiarity, notes and ability edits)")){
@@ -1651,7 +1706,11 @@ function renderItems(){
   var res=ITEMS.filter(function(it){
     if(iState.cat!=="All"&&it[1]!==iState.cat)return false;
     if(!itemAttrMatch(it))return false;
-    if(q&&it[0].toLowerCase().indexOf(q)<0)return false;
+    if(q){
+      var hit=itemSearchText(it).indexOf(q)>=0;
+      if(!hit){var n=store.items[it[0]];if(n&&n.toLowerCase().indexOf(q)>=0)hit=true;}
+      if(!hit)return false;
+    }
     return true;
   });
   res.forEach(function(it){
@@ -1741,7 +1800,7 @@ function updateCounts(){
   var tracked=GODS.filter(godTracked).length;
   $("#tc-gods").textContent=GODS.length;
   $("#tc-items").textContent=ITEMS.length;
-  $("#godSearch").setAttribute("placeholder","Search "+GODS.length+" gods…");
+  $("#godSearch").setAttribute("placeholder","Search "+GODS.length+" gods & abilities…");
   $("#tc-tracked").textContent=tracked||"";
 }
 
@@ -1750,6 +1809,28 @@ var toastT;
 function toast(msg){var t=$("#toast");t.textContent=msg;t.classList.add("show");clearTimeout(toastT);toastT=setTimeout(function(){t.classList.remove("show");},2200);}
 
 /* ================= BACKUP ================= */
+function downloadBackup(){
+  try{
+    var blob=new Blob([JSON.stringify(store)],{type:"application/json"});
+    var url=URL.createObjectURL(blob);
+    var d=new Date(),p=function(n){return (n<10?"0":"")+n;};
+    var a=document.createElement("a");
+    a.href=url;a.download="smite2-codex-backup-"+d.getFullYear()+"-"+p(d.getMonth()+1)+"-"+p(d.getDate())+".json";
+    document.body.appendChild(a);a.click();document.body.removeChild(a);
+    setTimeout(function(){URL.revokeObjectURL(url);},1500);
+    toast("Backup downloaded");
+  }catch(e){doExport();}
+}
+function restoreFromFile(file){
+  if(!file)return;
+  var rd=new FileReader();
+  rd.onload=function(){
+    try{var d=JSON.parse(rd.result);if(!d.gods)throw 0;if(!d.items)d.items={};store=d;save();refreshAll();toast("Progress restored");}
+    catch(e){toast("That file wasn't a valid backup");}
+  };
+  rd.onerror=function(){toast("Couldn't read that file");};
+  rd.readAsText(file);
+}
 function doExport(){
   var code=JSON.stringify(store);
   if(navigator.clipboard&&navigator.clipboard.writeText){
@@ -1784,8 +1865,11 @@ $("#practiceBtn").addEventListener("click",function(){
 });
 Array.prototype.forEach.call(document.querySelectorAll("nav.tabs button"),function(b){b.addEventListener("click",function(){setTab(b.getAttribute("data-tab"));});});
 $("#scrim").addEventListener("click",closeSheet);
+$("#godSort").addEventListener("change",function(){gState.sort=this.value;renderGods();});
+$("#downloadBtn").addEventListener("click",downloadBackup);
+$("#restoreBtn").addEventListener("click",function(){$("#importFile").click();});
+$("#importFile").addEventListener("change",function(){if(this.files&&this.files[0])restoreFromFile(this.files[0]);this.value="";});
 $("#exportBtn").addEventListener("click",doExport);
-$("#importBtn").addEventListener("click",doImport);
 $("#resetBtn").addEventListener("click",doReset);
 document.addEventListener("keydown",function(e){if(e.key==="Escape")closeSheet();});
 
