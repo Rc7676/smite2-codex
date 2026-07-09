@@ -197,7 +197,10 @@
   .item .iico{
     width:34px;height:34px;border-radius:9px;flex:none;display:grid;place-items:center;
     font-size:15px;background:var(--panel-3);border:1px solid var(--line);
+    position:relative;overflow:hidden;
   }
+  .iico .iglyph,.dt-med .iglyph{position:relative;z-index:1}
+  .iico .itemimg,.dt-med .itemimg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:2;display:block}
   .item .inm{font-weight:600;font-size:13.5px}
   .item .icat{font-size:10.5px;color:var(--ink-faint);letter-spacing:.05em;text-transform:uppercase;margin-top:1px}
   .item .cost{margin-left:auto;font-weight:700;font-size:13px;color:var(--gold);font-variant-numeric:tabular-nums;display:flex;align-items:center;gap:4px}
@@ -1258,6 +1261,18 @@ var ITEM_ICON_NAME = {
   "Sundering Axe":"⚔️","Death's Embrace":"☠️","Bumba's Hammer":"🔨","Pendulum Of The Ages":"⌛"
 };
 function itemIcon(it){return ITEM_ICON_NAME[it[0]]||ITEM_ICON[it[1]]||"◆";}
+/* Real item artwork. Populate ITEM_ICONS with  "Item Name":"items/<slug>.png"  (a file in an
+   items/ folder) or a "data:image/..." URI — same idea as window.ICONS for god portraits.
+   Any item not listed here keeps its glyph. window.ITEM_ICONS (set before this script) is merged in. */
+var ITEM_ICONS = {};
+if(typeof window!=="undefined"&&window.ITEM_ICONS){for(var _ik in window.ITEM_ICONS){if(window.ITEM_ICONS.hasOwnProperty(_ik))ITEM_ICONS[_ik]=window.ITEM_ICONS[_ik];}}
+function itemSlug(name){return name.toLowerCase().replace(/\([^)]*\)/g,"").replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"");}
+function itemMed(it){
+  var glyph='<span class="iglyph">'+itemIcon(it)+'</span>';
+  var src=ITEM_ICONS[it[0]];
+  if(src)return glyph+'<img class="itemimg" src="'+esc(src)+'" alt="'+esc(it[0])+'" loading="lazy" onerror="this.remove()">';
+  return glyph;
+}
 
 /* class emblem glyphs (24x24). Some are stroke-based. */
 var CLASS_GLYPH = {
@@ -1869,7 +1884,7 @@ function renderItems(){
     var note=store.items[it[0]];
     var sub=d?d.passive:(note?note:it[1]);
     row.innerHTML=
-      '<div class="iico">'+itemIcon(it)+'</div>'+
+      '<div class="iico">'+itemMed(it)+'</div>'+
       '<div style="min-width:0"><div class="inm">'+esc(it[0])+'</div><div class="idesc">'+esc(sub)+'</div></div>'+
       '<div class="cost'+(it[2]===0?" free":"")+'">'+(it[2]===0?"Free":'<span style="opacity:.7">◈</span>'+it[2].toLocaleString())+'</div>';
     row.onclick=function(){openItem(it);};
@@ -1895,7 +1910,7 @@ function openItem(it){
     : '<div class="dt-block"><h3>Passive / Effect</h3><div class="abil-empty" style="border:none;padding:0;text-align:left;color:var(--ink-faint)">No effect details seeded for this item yet — add your own below.</div></div>';
   s.innerHTML=
     '<div class="dt-head">'+
-      '<div class="dt-med" style="--rc:var(--gold);font-size:26px;color:#241a06">'+itemIcon(it)+'</div>'+
+      '<div class="dt-med" style="--rc:var(--gold);font-size:26px;color:#241a06">'+itemMed(it)+'</div>'+
       '<div style="flex:1;min-width:0"><h2 style="font-size:20px">'+esc(it[0])+'</h2><div class="dt-tags"><span class="badge">'+it[1]+'</span></div></div>'+
       '<button class="close-x" id="closeSheet">✕</button>'+
     '</div>'+
