@@ -326,16 +326,33 @@
   .view{display:none}
   .view.active{display:block}
   .hint{font-size:11.5px;color:var(--ink-faint);margin-top:14px;text-align:center;line-height:1.6}
+  /* ============ SETTINGS / CONTROLLER ============ */
+  .gear{appearance:none;cursor:pointer;background:var(--panel);border:1px solid var(--line);color:var(--ink-dim);width:38px;height:38px;border-radius:10px;font-size:18px;flex:none;display:grid;place-items:center;transition:.16s;font-family:inherit}
+  .gear:hover,.gear:focus-visible{border-color:var(--gold-deep);color:var(--gold);outline:none}
+  .seg.seg-c button[data-c][aria-pressed="true"]{background:var(--gold);color:#241a06;border-color:transparent}
+  .map-row{display:flex;align-items:center;gap:9px;padding:10px 0;border-bottom:1px solid var(--line-soft)}
+  .map-row:last-of-type{border-bottom:none}
+  .map-row .ms{font-size:12.5px;color:var(--ink-dim);width:58px;flex:none}
+  .map-row .key{width:26px;height:26px;font-size:11px}
+  .map-row .maparrow{color:var(--ink-faint);font-size:12px}
+  .map-row .mapbadge{flex:none}
+  .map-row .mapsel{margin-left:auto;max-width:150px}
+  .ab .keywrap{display:flex;flex-direction:column;align-items:center;gap:5px;flex:none}
+  .cbtn{min-width:26px;height:22px;padding:0 6px;border-radius:6px;display:inline-grid;place-items:center;font-weight:800;font-size:12px;line-height:1;background:var(--panel-2);border:1px solid var(--line);color:var(--ink);font-family:inherit}
+  .cbtn.shape{font-size:14px}
 </style>
 
 <header>
   <div class="head-inner">
+    <div class="row-between">
     <div class="brand">
       <div class="sigil">⚔</div>
       <div>
         <h1>Smite 2 Codex</h1>
         <p>Player&nbsp;Companion</p>
       </div>
+    </div>
+      <button class="gear" id="settingsBtn" aria-label="Settings" title="Settings">⚙</button>
     </div>
     <nav class="tabs" role="tablist">
       <button role="tab" aria-selected="true" data-tab="gods">Gods <span class="tcount" id="tc-gods"></span></button>
@@ -2224,6 +2241,82 @@ function emptyState(msg){
 
 /* ================= GOD DETAIL SHEET ================= */
 var editAbil=false;
+
+/* ================= SETTINGS: CONTROLLER LAYOUT ================= */
+var CONTROLLERS={
+  keyboard:{name:"Keyboard",btns:["P","1","2","3","4","Q","E","R","F","Z","X","C","V"],def:["P","1","2","3","4"]},
+  ps:{name:"PlayStation",btns:["Triangle","Circle","Cross","Square","L1","R1","L2","R2","L3","R3"],def:["L1","Square","Triangle","Circle","R1"]},
+  xbox:{name:"Xbox",btns:["Y","B","A","X","LB","RB","LT","RT","LS","RS"],def:["LB","X","Y","B","RB"]},
+  ninswitch:{name:"Nintendo",btns:["X","A","B","Y","L","R","ZL","ZR","LS","RS"],def:["L","Y","X","A","R"]}
+};
+var BTN_STYLE={
+  Triangle:{g:"△",c:"#3fb89b",shape:1},Circle:{g:"◯",c:"#e86a72",shape:1},Cross:{g:"✕",c:"#6c8cff",shape:1},Square:{g:"▭",c:"#d06ad0",shape:1}
+};
+var XBOX_COLORS={A:"#6cc04a",B:"#e5442e",X:"#4a90d9",Y:"#f5c518"};
+function ctrlGlyph(btn){return (BTN_STYLE[btn]&&BTN_STYLE[btn].g)||btn;}
+function controllerBadge(cid,btn){
+  var st=BTN_STYLE[btn]||{g:btn};
+  var color=st.c;
+  if(cid==="xbox"&&XBOX_COLORS[btn])color=XBOX_COLORS[btn];
+  var sty=color?' style="color:'+color+';border-color:'+color+'"':'';
+  return '<span class="cbtn'+(st.shape?' shape':'')+'"'+sty+'>'+esc(st.g)+'</span>';
+}
+function optLabel(btn){var g=ctrlGlyph(btn);return g!==btn?(g+"  "+btn):btn;}
+function settings(){var s=store.settings||{};return {controller:CONTROLLERS[s.controller]?s.controller:"keyboard",showButtons:s.showButtons!==false,maps:s.maps||{}};}
+function saveSettings(s){store.settings=s;save();}
+function ctrlMap(s,c){return (s.maps&&s.maps[c])?s.maps[c]:CONTROLLERS[c].def.slice();}
+function abilKeyHTML(i){
+  var s=settings();
+  var numKey='<div class="key">'+ABIL_KEYS[i]+'</div>';
+  if(!s.showButtons)return numKey;
+  var c=s.controller,map=ctrlMap(s,c);
+  var btn=(map[i]!=null&&map[i]!=="")?map[i]:CONTROLLERS[c].def[i];
+  if(c==="keyboard")return '<div class="key">'+esc(ctrlGlyph(btn))+'</div>';
+  return '<div class="keywrap">'+numKey+controllerBadge(c,btn)+'</div>';
+}
+function openSettings(){
+  var sh=$("#sheetIn");
+  var ctrls=[["keyboard","Keyboard"],["ps","PlayStation"],["xbox","Xbox"],["ninswitch","Nintendo"]];
+  var s=settings();
+  sh.innerHTML=
+    '<div class="dt-head"><div class="dt-med" style="--rc:var(--gold);font-size:24px;color:#241a06">⚙</div>'+
+      '<div style="flex:1;min-width:0"><h2>Settings</h2><div class="dt-tags"><span class="badge">Controller layout</span></div></div>'+
+      '<button class="close-x" id="closeSheet">✕</button></div>'+
+    '<div class="dt-block" style="border-bottom:none">'+
+      '<div class="toggle-line"><div class="tl-txt"><strong>Show controller layout</strong><span>Show your button next to each ability</span></div>'+
+        '<label class="switch"><input type="checkbox" id="ctrlTog"'+(s.showButtons?" checked":"")+'><span class="sl"></span></label></div>'+
+      '<h3 style="margin-top:18px">Controller</h3><div class="seg seg-c" id="ctrlSeg"></div>'+
+      '<div id="mapEditor"></div>'+
+    '</div>';
+  var seg=$("#ctrlSeg");
+  ctrls.forEach(function(c){var b=el("button");b.setAttribute("data-c",c[0]);b.setAttribute("aria-pressed",settings().controller===c[0]);b.textContent=c[1];
+    b.onclick=function(){var st=settings();st.controller=c[0];saveSettings(st);openSettings();};seg.appendChild(b);});
+  $("#ctrlTog").onchange=function(){var st=settings();st.showButtons=this.checked;saveSettings(st);buildMapEditor();};
+  $("#closeSheet").onclick=closeSheet;
+  buildMapEditor();
+  openSheet();
+  function buildMapEditor(){
+    var st=settings(),c=st.controller,ed=$("#mapEditor");
+    if(!st.showButtons){ed.innerHTML='<p class="hint" style="text-align:left;margin-top:14px">Turn on to show controller buttons next to each ability.</p>';return;}
+    var C=CONTROLLERS[c],map=ctrlMap(st,c);
+    var html='<h3 style="margin-top:18px">Teach your layout</h3>'+
+      '<p class="hint" style="text-align:left;margin:2px 0 8px">Assign a button to each ability — shown on every god'+(c==="keyboard"?"":" next to its number")+'.</p>';
+    for(var i=0;i<5;i++){
+      var cur=(map[i]!=null&&map[i]!=="")?map[i]:C.def[i];
+      html+='<div class="map-row"><span class="ms">'+ABIL_SLOTS[i]+'</span><span class="key">'+ABIL_KEYS[i]+'</span>'+
+        '<span class="maparrow">→</span><span class="mapbadge">'+controllerBadge(c,cur)+'</span>'+
+        '<select class="sortsel mapsel" data-i="'+i+'">'+
+        C.btns.map(function(bn){return '<option value="'+bn+'"'+(cur===bn?" selected":"")+'>'+optLabel(bn)+'</option>';}).join("")+'</select></div>';
+    }
+    html+='<button class="mini" id="mapReset" style="margin-top:14px;color:var(--solo)">↺ Reset '+C.name+' to default</button>';
+    ed.innerHTML=html;
+    Array.prototype.forEach.call(ed.querySelectorAll(".mapsel"),function(sel){
+      sel.onchange=function(){var st=settings(),c=st.controller;st.maps=st.maps||{};st.maps[c]=ctrlMap(st,c).slice();st.maps[c][+sel.getAttribute("data-i")]=sel.value;saveSettings(st);buildMapEditor();};
+    });
+    $("#mapReset").onclick=function(){var st=settings();if(st.maps)delete st.maps[c];saveSettings(st);buildMapEditor();};
+  }
+}
+
 function openGod(g){
   editAbil=false;
   var r=rec(g[0]);
@@ -2326,7 +2419,7 @@ function renderAbil(g){
 
   working.forEach(function(a,i){
     var row=el("div","ab");
-    var key='<div class="key">'+ABIL_KEYS[i]+'</div>';
+    var key=abilKeyHTML(i);
     if(editAbil){
       row.innerHTML=key+'<div class="abtxt">'+
         '<input class="ab-input" data-i="'+i+'" data-k="n" placeholder="'+ABIL_SLOTS[i]+' ability name" value="'+esc(a.n)+'">'+
@@ -2548,6 +2641,7 @@ $("#practiceBtn").addEventListener("click",function(){
 });
 Array.prototype.forEach.call(document.querySelectorAll("nav.tabs button"),function(b){b.addEventListener("click",function(){setTab(b.getAttribute("data-tab"));});});
 $("#scrim").addEventListener("click",closeSheet);
+$("#settingsBtn").addEventListener("click",openSettings);
 $("#godSort").addEventListener("change",function(){gState.sort=this.value;renderGods();});
 $("#downloadBtn").addEventListener("click",downloadBackup);
 $("#restoreBtn").addEventListener("click",function(){$("#importFile").click();});
