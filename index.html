@@ -197,7 +197,10 @@
   .item .iico{
     width:34px;height:34px;border-radius:9px;flex:none;display:grid;place-items:center;
     font-size:15px;background:var(--panel-3);border:1px solid var(--line);
+    position:relative;overflow:hidden;
   }
+  .iico .iglyph,.dt-med .iglyph{position:relative;z-index:1}
+  .iico .itemimg,.dt-med .itemimg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:2;display:block}
   .item .inm{font-weight:600;font-size:13.5px}
   .item .icat{font-size:10.5px;color:var(--ink-faint);letter-spacing:.05em;text-transform:uppercase;margin-top:1px}
   .item .cost{margin-left:auto;font-weight:700;font-size:13px;color:var(--gold);font-variant-numeric:tabular-nums;display:flex;align-items:center;gap:4px}
@@ -1249,6 +1252,209 @@ var ITEMS = [
 ];
 
 var ITEM_ICON = {Relic:"✦",Curio:"❖",Consumable:"⚗",Starter:"◈",Offense:"⚔",Defense:"🛡",Hybrid:"⚖","God-Specific":"★"};
+/* per-item icons for starters (fall back to the category icon otherwise) */
+var ITEM_ICON_NAME = {
+  "Selflessness":"🤝","Leather Cowl":"🥾","Bluestone Pendant":"🔷","Vampiric Shroud":"🧛","War Flag":"🚩",
+  "Conduit Gem":"💎","Gilded Arrow":"🏹","Sands Of Time":"⏳","Bumba's Golden Dagger":"🗡️","Bumba's Cudgel":"🏏",
+  "Warrior's Axe":"🪓","Death's Toll":"⚰️","Heroism":"🛡️","War Banner":"🎌","Bluestone Brooch":"🟦",
+  "Hunter's Cowl":"🐾","Blood-soaked Shroud":"🩸","Sharpshooter's Arrow":"🎯","Bumba's Spear":"🔱","Archmage's Gem":"🔮",
+  "Sundering Axe":"⚔️","Death's Embrace":"☠️","Bumba's Hammer":"🔨","Pendulum Of The Ages":"⌛"
+};
+function itemIcon(it){return ITEM_ICON_NAME[it[0]]||ITEM_ICON[it[1]]||"◆";}
+/* Real item artwork. Populate ITEM_ICONS with  "Item Name":"items/<slug>.png"  (a file in an
+   items/ folder) or a "data:image/..." URI — same idea as window.ICONS for god portraits.
+   Any item not listed here keeps its glyph. window.ITEM_ICONS (set before this script) is merged in. */
+var ITEM_ICONS = {
+ "Aegis of Acceleration":"items/aegis-of-acceleration.png",
+ "Agility Greaves":"items/agility-greaves.png",
+ "Agility Relic":"items/agility-relic.png",
+ "Alchemist Coat":"items/alchemist-coat.png",
+ "Amanita Charm":"items/amanita-charm.png",
+ "Ancient Signet":"items/ancient-signet.png",
+ "Ancile":"items/ancile.png",
+ "Archmage's Gem":"items/archmage-s-gem.png",
+ "Arondight":"items/arondight.png",
+ "Avatar's Parashu":"items/avatar-s-parashu.png",
+ "Avenging Blade":"items/avenging-blade.png",
+ "Bancroft's Talon":"items/bancroft-s-talon.png",
+ "Barbed Carver":"items/barbed-carver.png",
+ "Berserker's Shield":"items/berserker-s-shield.png",
+ "Blink Rune":"items/blink-rune.png",
+ "Blinking Abyss":"items/blinking-abyss.png",
+ "Blood-Bound Book":"items/blood-bound-book.png",
+ "Blood-soaked Shroud":"items/blood-soaked-shroud.png",
+ "Bloodforge":"items/bloodforge.png",
+ "Bluestone Brooch":"items/bluestone-brooch.png",
+ "Bluestone Pendant":"items/bluestone-pendant.png",
+ "Book of Thoth":"items/book-of-thoth.png",
+ "Bracer of The Abyss":"items/bracer-of-the-abyss.png",
+ "Bragi's Harp":"items/bragi-s-harp.png",
+ "Brawler's Beat Stick":"items/brawler-s-beat-stick.png",
+ "Breastplate of Valor":"items/breastplate-of-valor.png",
+ "Bumba's Cudgel":"items/bumba-s-cudgel.png",
+ "Bumba's Golden Dagger":"items/bumba-s-golden-dagger.png",
+ "Bumba's Hammer":"items/bumba-s-hammer.png",
+ "Bumba's Spear":"items/bumba-s-spear.png",
+ "Chandra's Grace":"items/chandra-s-grace.png",
+ "Chronos' Pendant":"items/chronos-pendant.png",
+ "Circe's Hexstone":"items/circe-s-hexstone.png",
+ "Conduit Gem":"items/conduit-gem.png",
+ "Contagion":"items/contagion.png",
+ "Crystalline Egg":"items/crystalline-egg.png",
+ "Dagger of Frenzy":"items/dagger-of-frenzy.png",
+ "Damaru":"items/damaru.png",
+ "Daybreak Gavel":"items/daybreak-gavel.png",
+ "Death Metal":"items/death-metal.png",
+ "Death's Embrace":"items/death-s-embrace.png",
+ "Death's Toll":"items/death-s-toll.png",
+ "Deathbringer":"items/deathbringer.png",
+ "Demon Blade":"items/demon-blade.png",
+ "Devourer's Gauntlet":"items/devourer-s-gauntlet.png",
+ "Divine Ruin":"items/divine-ruin.png",
+ "Doom Orb":"items/doom-orb.png",
+ "Doublet of Binding":"items/doublet-of-binding.png",
+ "Draconic Scale":"items/draconic-scale.png",
+ "Dreamer's Idol":"items/dreamer-s-idol.png",
+ "Dwarven Plate":"items/dwarven-plate.png",
+ "Elixir of Intelligence":"items/elixir-of-intelligence.png",
+ "Elixir of Strength":"items/elixir-of-strength.png",
+ "Eros' Bow":"items/eros-bow.png",
+ "Erosion":"items/erosion.png",
+ "Eye of Erebus":"items/eye-of-erebus.png",
+ "Eye of Providence":"items/eye-of-providence.png",
+ "Eye of the Storm":"items/eye-of-the-storm.png",
+ "Eyes of the Jungle":"items/eyes-of-the-jungle.png",
+ "Freya's Tears":"items/freya-s-tears.png",
+ "Gauntlet of Thebes":"items/gauntlet-of-thebes.png",
+ "Gem of Focus":"items/gem-of-focus.png",
+ "Gem of Isolation":"items/gem-of-isolation.png",
+ "Genji's Guard":"items/genji-s-guard.png",
+ "Gilded Arrow":"items/gilded-arrow.png",
+ "Gladiator's Shield":"items/gladiator-s-shield.png",
+ "Glorious Pridwen":"items/glorious-pridwen.png",
+ "Gluttonous Grimoire":"items/gluttonous-grimoire.png",
+ "Golden Blade":"items/golden-blade.png",
+ "Hastened Fatalis":"items/hastened-fatalis.png",
+ "Health Chalice":"items/health-chalice.png",
+ "Health Potion":"items/health-potion.png",
+ "Heartseeker":"items/heartseeker.png",
+ "Heartwood Charm":"items/heartwood-charm.png",
+ "Helm of Darkness":"items/helm-of-darkness.png",
+ "Helm of Radiance":"items/helm-of-radiance.png",
+ "Heroism":"items/heroism.png",
+ "Hide of the Nemean Lion":"items/hide-of-the-nemean-lion.png",
+ "Hunter's Cowl":"items/hunter-s-cowl.png",
+ "Hussar's Wings":"items/hussar-s-wings.png",
+ "Hydra's Lament":"items/hydra-s-lament.png",
+ "Jade Scepter":"items/jade-scepter.png",
+ "Jotunn's Revenge":"items/jotunn-s-revenge.png",
+ "Kinetic Cuirass":"items/kinetic-cuirass.png",
+ "Leather Cowl":"items/leather-cowl.png",
+ "Lernaean Bow":"items/lernaean-bow.png",
+ "Leviathan's Hide":"items/leviathan-s-hide.png",
+ "Lifebinder":"items/lifebinder.png",
+ "Magi's Cloak":"items/magi-s-cloak.png",
+ "Mana Potion":"items/mana-potion.png",
+ "Mantle Of Discord":"items/mantle-of-discord.png",
+ "Mercury's Talaria":"items/mercury-s-talaria.png",
+ "Midgardian Mail":"items/midgardian-mail.png",
+ "Multi Potion":"items/multi-potion.png",
+ "Musashi's Dual Swords":"items/musashi-s-dual-swords.png",
+ "Mystical Mail":"items/mystical-mail.png",
+ "Necronomicon":"items/necronomicon.png",
+ "Nimble Ring":"items/nimble-ring.png",
+ "Oath-Sworn Spear":"items/oath-sworn-spear.png",
+ "Obsidian Dagger":"items/obsidian-dagger.png",
+ "Obsidian Shard":"items/obsidian-shard.png",
+ "Odysseus' Bow":"items/odysseus-bow.png",
+ "Omen Drum":"items/omen-drum.png",
+ "Oni Hunter's Garb":"items/oni-hunter-s-garb.png",
+ "Pendulum Blade":"items/pendulum-blade.png",
+ "Pendulum Of The Ages":"items/pendulum-of-the-ages.png",
+ "Phantom Shell":"items/phantom-shell.png",
+ "Pharaoh's Curse":"items/pharaoh-s-curse.png",
+ "Phoenix Feather":"items/phoenix-feather.png",
+ "Polynomicon":"items/polynomicon.png",
+ "Prophetic Cloak":"items/prophetic-cloak.png",
+ "Purification Beads":"items/purification-beads.png",
+ "Qin's Blade":"items/qin-s-blade.png",
+ "Radiant Bulwark":"items/radiant-bulwark.png",
+ "Rage":"items/rage.png",
+ "Ragnarok's Wake":"items/ragnarok-s-wake.png",
+ "Regrowth Striders":"items/regrowth-striders.png",
+ "Resolute Mantle":"items/resolute-mantle.png",
+ "Riptalon":"items/riptalon.png",
+ "Ritual of Star Strike":"items/ritual-of-star-strike.png",
+ "Ritual of the Full Moon":"items/ritual-of-the-full-moon.png",
+ "Rod Of Asclepius":"items/rod-of-asclepius.png",
+ "Rod of Tahuti":"items/rod-of-tahuti.png",
+ "Runeforged Hammer":"items/runeforged-hammer.png",
+ "Runic Bomb":"items/runic-bomb.png",
+ "Sands Of Time":"items/sands-of-time.png",
+ "Sanguine Lash":"items/sanguine-lash.png",
+ "Scepter of Dominion":"items/scepter-of-dominion.png",
+ "Screeching Gargoyle":"items/screeching-gargoyle.png",
+ "Selflessness":"items/selflessness.png",
+ "Sentry Ward":"items/sentry-ward.png",
+ "Sharpshooter's Arrow":"items/sharpshooter-s-arrow.png",
+ "Shell of Rebuke":"items/shell-of-rebuke.png",
+ "Shield Splitter":"items/shield-splitter.png",
+ "Shield of the Phoenix":"items/shield-of-the-phoenix.png",
+ "Shifter's Shield":"items/shifter-s-shield.png",
+ "Shogun's Ofuda":"items/shogun-s-ofuda.png",
+ "Shroud of Vengeance":"items/shroud-of-vengeance.png",
+ "Soul Gem":"items/soul-gem.png",
+ "Soul Reaver":"items/soul-reaver.png",
+ "Spear Of The Magus":"items/spear-of-the-magus.png",
+ "Spear of Desolation":"items/spear-of-desolation.png",
+ "Spectral Armor":"items/spectral-armor.png",
+ "Sphere of Negation":"items/sphere-of-negation.png",
+ "Spirit Robe":"items/spirit-robe.png",
+ "Staff of Myrddin":"items/staff-of-myrddin.png",
+ "Stampede":"items/stampede.png",
+ "Stone of Binding":"items/stone-of-binding.png",
+ "Stygian Anchor":"items/stygian-anchor.png",
+ "Sun Beam Bow":"items/sun-beam-bow.png",
+ "Sundering Arc":"items/sundering-arc.png",
+ "Sundering Axe":"items/sundering-axe.png",
+ "Sundering Echo":"items/sundering-echo.png",
+ "Talisman of Purification":"items/talisman-of-purification.png",
+ "Tekko-Kagi":"items/tekko-kagi.png",
+ "The Cosmic Horror":"items/the-cosmic-horror.png",
+ "The Crusher":"items/the-crusher.png",
+ "The Executioner":"items/the-executioner.png",
+ "The Reaper":"items/the-reaper.png",
+ "The World Stone":"items/the-world-stone.png",
+ "Time-lock Aegis":"items/time-lock-aegis.png",
+ "Titan's Bane":"items/titan-s-bane.png",
+ "Totem of Death":"items/totem-of-death.png",
+ "Transcendence":"items/transcendence.png",
+ "Triton's Conch":"items/triton-s-conch.png",
+ "Typhon's Heart":"items/typhon-s-heart.png",
+ "Tyrfing":"items/tyrfing.png",
+ "Umbral Link":"items/umbral-link.png",
+ "Vampiric Shroud":"items/vampiric-shroud.png",
+ "Vision Ward":"items/vision-ward.png",
+ "Vital Amplifier":"items/vital-amplifier.png",
+ "Void Shield":"items/void-shield.png",
+ "Void Stone":"items/void-stone.png",
+ "War Banner":"items/war-banner.png",
+ "War Flag":"items/war-flag.png",
+ "Warding Chalice":"items/warding-chalice.png",
+ "Warrior's Axe":"items/warrior-s-axe.png",
+ "Wish-Granting Pearl":"items/wish-granting-pearl.png",
+ "Wyrmskin Hide":"items/wyrmskin-hide.png",
+ "Xibalban Effigy":"items/xibalban-effigy.png",
+ "Yogi's Necklace":"items/yogi-s-necklace.png"
+};
+if(typeof window!=="undefined"&&window.ITEM_ICONS){for(var _ik in window.ITEM_ICONS){if(window.ITEM_ICONS.hasOwnProperty(_ik))ITEM_ICONS[_ik]=window.ITEM_ICONS[_ik];}}
+function itemSlug(name){return name.toLowerCase().replace(/\([^)]*\)/g,"").replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"");}
+function itemMed(it){
+  var glyph='<span class="iglyph">'+itemIcon(it)+'</span>';
+  var src=ITEM_ICONS[it[0]];
+  if(src)return glyph+'<img class="itemimg" src="'+esc(src)+'" alt="'+esc(it[0])+'" loading="lazy" onerror="this.remove()">';
+  return glyph;
+}
 
 /* class emblem glyphs (24x24). Some are stroke-based. */
 var CLASS_GLYPH = {
@@ -1394,7 +1600,101 @@ var ITEM_DESC = {
  "Dreamer's Idol":{stats:[["Intelligence","130"],["Penetration","10%"]],passive:"Active — +25% Intelligence and immunity to displacement for 10s. Cooldown 120s."},
  "Avatar's Parashu":{stats:[["Strength","90"],["Penetration","10%"]],passive:"Active — +25% Strength and immunity to displacement for 10s. Cooldown 120s."},
  "Totem of Death":{stats:[["Intelligence","60"],["Cooldown Rate","15"]],passive:"Ability hits on gods/bosses apply Piercing: -6% protections for 4s (stacks up to 5 → -30%)."},
- "Vital Amplifier":{stats:[["Health","200"],["HP5","3"],["Attack Speed","10%"],["Adaptive","+30 Str / +45 Int"]],passive:"Healing yourself or an ally with an ability grants +7.5% attack speed and +5% attack damage for 6s (max 3)."}
+ "Vital Amplifier":{stats:[["Health","200"],["HP5","3"],["Attack Speed","10%"],["Adaptive","+30 Str / +45 Int"]],passive:"Healing yourself or an ally with an ability grants +7.5% attack speed and +5% attack damage for 6s (max 3)."},
+ // Relics / actives (upgrades)
+ "Sundering Echo":{stats:[],passive:"Active — upgraded Sundering Arc: charge your next damaging ability to also deal a larger burst of the target's max health as true damage."},
+ "Agility Greaves":{stats:[],passive:"Active — upgraded Agility Relic: a longer, stronger movement-speed burst with immunity to slows."},
+ // Curios (vision / utility actives; all players carry one)
+ "Meditation":{stats:[],passive:"Active — channel briefly to restore health and mana to yourself and nearby allies."},
+ "Heimdallr's Sight":{stats:[],passive:"Active — fire a long-range scouting shot that reveals enemies in several pulses along its path."},
+ "Gjallarflare":{stats:[],passive:"Active — launch a long-range flare that detonates to reveal a wide area of the map."},
+ "Bifrost Shard":{stats:[],passive:"Active — place a stationary ward that reveals a nearby area for a duration. Can be swapped for another curio."},
+ "Battle Cry":{stats:[],passive:"Earn stacks from kills and deaths, then cash them in for a short, powerful surge of stats."},
+ // Consumables (jungle rituals & bombs)
+ "Ritual of Star Strike":{stats:[],passive:"Active — reveal all enemy gods and call down star strikes on them, dealing damage that scales with their level."},
+ "Runic Bomb":{stats:[],passive:"Active — throw a bomb dealing heavy flat damage; damage to jungle bosses can't be mitigated."},
+ "Obsidian Dagger":{stats:[],passive:"Active — unleash a burst of true damage, ignoring protections. Handy for securing objectives."},
+ "Crystalline Egg":{stats:[],passive:"Active — a jungle ritual that grants a burst of protections and sustain when consumed."},
+ "Eyes of the Jungle":{stats:[],passive:"Active — reveal a wide area of the jungle and highlight nearby camps and objectives for your team."},
+ "Ritual of the Full Moon":{stats:[],passive:"Active — convert your team's carried Shards into a shared movement-speed buff for a short time."},
+ // Starters (tier 2 upgrades)
+ "Heroism":{stats:[["Strength","+"],["Physical Prot.","+"],["Health","+"]],passive:"Upgraded Warrior's Axe — abilities cleave nearby enemies and heal you; strong bruiser frontline sustain."},
+ "War Banner":{stats:[["Strength","+"],["Health","+"]],passive:"Upgraded War Flag — a stronger aura that buffs the power and protections of nearby allied gods and minions."},
+ "Bluestone Brooch":{stats:[["Strength","+"],["Health","+"]],passive:"Upgraded Bluestone — your abilities apply a stronger damage-over-time burn to enemies hit."},
+ "Hunter's Cowl":{stats:[["Strength","+"],["Attack Speed","+"]],passive:"Upgraded Leather Cowl — grants movement speed and empowers you after kills and assists."},
+ "Blood-soaked Shroud":{stats:[["Intelligence","+"],["Health","+"]],passive:"Upgraded Vampiric Shroud — abilities restore more health and mana and grant a small shield."},
+ "Sharpshooter's Arrow":{stats:[["Strength","+"],["Attack Speed","+"]],passive:"Upgraded Gilded Arrow — builds attack speed and penetration as you keep attacking."},
+ "Bumba's Spear":{stats:[["Strength","+"],["Physical Lifesteal","+"]],passive:"Upgraded Bumba's — bonus damage to jungle monsters that restores health and mana and empowers your next hit."},
+ "Archmage's Gem":{stats:[["Intelligence","+"],["Mana","+"]],passive:"Upgraded Conduit Gem — stacks bonus magical power when your abilities hit enemy gods."},
+ "Sundering Axe":{stats:[["Strength","+"],["Health","+"]],passive:"Upgraded Warrior's Axe variant — abilities cleave and shred a portion of the target's protections."},
+ "Death's Embrace":{stats:[["Strength","+"],["Health","+"]],passive:"Upgraded Death's Toll — basic attacks heal you for a percentage of the damage dealt."},
+ "Bumba's Hammer":{stats:[["Strength","+"],["Attack Speed","+"]],passive:"Upgraded Bumba's — empowered basic attacks deal bonus damage to monsters and restore health and mana."},
+ "Pendulum Of The Ages":{stats:[["Intelligence","+"],["Cooldown Rate","+"]],passive:"Upgraded Sands of Time — grants scaling cooldown rate that grows as the match goes on."},
+ // Offense
+ "Typhon's Heart":{stats:[["Intelligence","+"],["Magical Lifesteal","+"]],passive:"Increases your magical power and boosts the strength of your magical lifesteal healing."},
+ "The World Stone":{stats:[["Intelligence","+"],["Health","+"]],passive:"When you drop to low health, gain a burst heal and protections (long cooldown)."},
+ "Omen Drum":{stats:[["Strength","+"],["Attack Speed","+"]],passive:"Aura — grants nearby allied gods bonus attack speed and cooldown rate."},
+ // Defense
+ "Yogi's Necklace":{stats:[["Magical Prot.","+"],["HP5","+"]],passive:"Grants magical defense and strong health regeneration for sustained fights."},
+ "Eye of Providence":{stats:[["Physical Prot.","25"],["Magical Prot.","25"],["Health","250"]],passive:"Balanced protections and health; gain bonus gold for destroying enemy wards."},
+ "Chandra's Grace":{stats:[["Magical Prot.","+"],["Movement","+"]],passive:"Grants protections and movement speed; heals you and nearby allies more strongly at night."},
+ "Spectral Armor":{stats:[["Physical Prot.","+"],["Health","+"]],passive:"You and nearby allies take reduced damage from critical strikes."},
+ "Alchemist Coat":{stats:[["Physical Prot.","+"],["Health","+"]],passive:"Grants crowd-control reduction and shortens the duration of hard CC on you."},
+ "Amanita Charm":{stats:[["Magical Prot.","+"],["Health","+"]],passive:"Stack Sporeguard to reduce damage from basics and abilities; a damaging ultimate consumes all stacks to blunt it."},
+ "Shield of the Phoenix":{stats:[["Physical Prot.","+"],["Health","+"]],passive:"Grants a strong shield when you drop to low health (long cooldown)."},
+ "Kinetic Cuirass":{stats:[["Physical Prot.","+"],["Health","+"]],passive:"Damage you take charges the cuirass; when full, release a shockwave that damages and slows nearby enemies."},
+ "Magi's Cloak":{stats:[["Physical Prot.","35"],["Magical Prot.","35"]],passive:"Blocks one hard crowd-control effect roughly once every 70s, granting a brief moment of CC immunity."},
+ "Phoenix Feather":{stats:[["Magical Prot.","+"],["Health","+"]],passive:"Provides magical defense and health; heals you for a portion of your max health on a cooldown."},
+ "Screeching Gargoyle":{stats:[["Magical Prot.","+"],["Health","+"]],passive:"When hit by an ability, emit a screech that briefly silences nearby enemies (on a cooldown)."},
+ "Erosion":{stats:[["Physical Prot.","+"],["Health","+"]],passive:"Aura that saps the protections and attack speed of nearby enemies."},
+ "Pharaoh's Curse":{stats:[["Physical Prot.","+"],["Health","+"]],passive:"Aura that reduces the healing and protections of nearby enemies."},
+ "Gladiator's Shield":{stats:[["Strength","+"],["Physical Prot.","+"],["Health","+"]],passive:"Bruiser item — your abilities heal you, scaling with the number of enemies hit."},
+ "Oni Hunter's Garb":{stats:[["Physical Prot.","+"],["Attack Speed","+"]],passive:"Gain stacking damage mitigation for each nearby enemy god (up to ~12% with three or more)."},
+ "Umbral Link":{stats:[["Magical Prot.","+"],["Cooldown Rate","+"]],passive:"Grants protections and cooldown; converts a portion of your protections into bonus power."},
+ "Shroud of Vengeance":{stats:[["Magical Prot.","+"],["Health","+"]],passive:"When you take heavy damage, reflect a burst of magical damage back at nearby attackers."},
+ "Leviathan's Hide":{stats:[["Physical Prot.","+"],["Health","+"]],passive:"A large pool of health and physical defense for tanky frontliners; mitigation scales with missing health."},
+ "Regrowth Striders":{stats:[["Physical Prot.","+"],["Magical Prot.","+"],["Movement","+"]],passive:"Grants movement speed and strong out-of-combat health regeneration."},
+ "Stygian Anchor":{stats:[["Magical Prot.","+"],["Health","+"]],passive:"Your hard crowd control applies anti-heal to the enemies it hits."},
+ "Freya's Tears":{stats:[["Magical Prot.","+"],["Mana","+"],["MP5","+"]],passive:"Magical defense with strong mana sustain, refunding mana when your abilities hit."},
+ "Wyrmskin Hide":{stats:[["Physical Prot.","+"],["Health","+"]],passive:"Grants physical protection and reduced damage taken from enemy basic attacks."},
+ "Ragnarok's Wake":{stats:[["Physical Prot.","+"],["Magical Prot.","+"]],passive:"Active — after a wind-up, fly to a target location as a meteor, dealing heavy damage and knocking enemies up."},
+ "Heartwood Charm":{stats:[["Physical Prot.","+"],["Magical Prot.","+"]],passive:"Aura that grants nearby allied gods bonus health regeneration."},
+ "Doublet of Binding":{stats:[["Physical Prot.","+"],["Health","+"]],passive:"Enhances your crowd control — enemies you CC have their protections shredded for a few seconds."},
+ "Draconic Scale":{stats:[["Physical Prot.","+"],["Magical Prot.","+"]],passive:"Taking damage stacks protections against that damage type (up to +34 protections and bonus item protections at max stacks)."},
+ "Resolute Mantle":{stats:[["Physical Prot.","+"],["Magical Prot.","+"]],passive:"Periodically gain a protective shield; it recharges faster while you're in combat."},
+ "Radiant Bulwark":{stats:[["Magical Prot.","+"],["Health","+"]],passive:"Active — channel to gain 20% damage mitigation and pulse light that reveals and weakens nearby enemies."},
+ "Xibalban Effigy":{stats:[["Physical Prot.","+"],["Magical Prot.","+"]],passive:"Active — convert half of incoming magical damage into physical; at night, gain 25% damage mitigation while active."},
+ "Circe's Hexstone":{stats:[["Magical Prot.","+"],["Health","+"]],passive:"Aura that reduces the magical protections and healing of nearby enemies."},
+ "Dwarven Plate":{stats:[["Physical Prot.","+"],["Health","+"]],passive:"High physical protection with reduced damage taken from enemy basic attacks."},
+ "Hussar's Wings":{stats:[["Physical Prot.","+"],["Magical Prot.","+"],["Movement","+"]],passive:"Grants protections and a burst of movement speed, freeing you from slows when activated."},
+ // Hybrid
+ "Rod Of Asclepius":{stats:[["Intelligence","+"],["Health","+"]],passive:"Increases the healing your abilities provide to allies and grants them bonus movement speed."},
+ "Scepter of Dominion":{stats:[["Intelligence","+"],["Physical Prot.","+"]],passive:"Active/aura — reduce the protections of nearby enemies while granting yourself power and defense."},
+ "Shield Splitter":{stats:[["Strength","+"],["Attack Speed","+"]],passive:"Basic attacks stack physical penetration and deal bonus damage against shielded enemies."},
+ "Lifebinder":{stats:[["Intelligence","+"],["Physical Prot.","+"],["Magical Prot.","+"]],passive:"When you drop to low health, heal yourself and nearby allies (long cooldown)."},
+ "Eye of the Storm":{stats:[["Intelligence","+"],["Cooldown Rate","+"]],passive:"Grants power, mana and cooldown rate; hitting enemies with abilities zaps them for bonus magical damage."},
+ "Eye of Erebus":{stats:[["Intelligence","+"],["Penetration","+"]],passive:"Your ability damage applies anti-heal and stacks magical penetration on the target."},
+ "Sanguine Lash":{stats:[["Intelligence","+"],["Health","+"]],passive:"Grants power and defense; your damaging abilities root or slow the enemies they hit."},
+ "Helm of Darkness":{stats:[["Strength","+"],["Physical Prot.","+"]],passive:"Active — briefly become invisible and gain movement speed for a stealthy engage or escape."},
+ "Wish-Granting Pearl":{stats:[["Intelligence","+"],["Health","+"]],passive:"Active — grant yourself or an ally a large shield and cleanse crowd control (a powerful late-game save)."},
+ // God-specific
+ "Genie's Lamp (Aladdin)":{stats:[],passive:"Aladdin-only starter that powers up his Genie, granting bonus effects to his kit."},
+ "Training Grounds (Hua Mulan)":{stats:[],passive:"Hua Mulan-only item that advances her weapon training, empowering her stance-based abilities."},
+ "Baron's Brew (Baron Samedi)":{stats:[],passive:"Baron Samedi-only consumable that builds his Hysteria and empowers his healing and damage."},
+ "Magic Acorn (Ratatoskr)":{stats:[],passive:"Ratatoskr's base acorn — upgrade it anywhere on the map to change his Dart and playstyle."},
+ "Lively Acorn (Ratatoskr)":{stats:[["Adaptive","+"]],passive:"Early acorn upgrade granting Ratatoskr bonus stats and sustain."},
+ "Ashwhorl Acorn (Ratatoskr)":{stats:[],passive:"Flurry sends acorns in a ring that freeze then return, dealing damage and granting attack speed per god hit; adds movement speed on Dart."},
+ "Briskberry Acorn (Ratatoskr)":{stats:[],passive:"Dart knocks enemy gods back and marks them; hitting an unmarked enemy resets Dart's cooldown."},
+ "Thistlethorn Acorn (Ratatoskr)":{stats:[],passive:"Acorn Blast fires 5 sticking acorns that explode instead of stunning, ramping damage on the target (up to +21%)."},
+ "Masterwork Mod (Vulcan)":{stats:[],passive:"Vulcan's Thumper gains bonus health and grants allied gods it hits a burst of protections."},
+ "Thermal Mod (Vulcan)":{stats:[],passive:"Backfire and Magma Bomb deal bonus magical damage scaling with Intelligence."},
+ "Surplus Mod (Vulcan)":{stats:[],passive:"Lets Vulcan keep two Inferno Cannons deployed at once."},
+ "Seismic Mod (Vulcan)":{stats:[],passive:"Earthshaker trembles the enemies it hits for a couple of seconds."},
+ "Resonator Mod (Vulcan)":{stats:[],passive:"Thumper gains bonus health and applies an attack-speed slow to enemies it hits."},
+ "Dual Mod (Vulcan)":{stats:[],passive:"Modifies Vulcan's kit to deploy or fire dual effects for extra coverage."},
+ "Efficiency Mod (Vulcan)":{stats:[],passive:"Reduces the cost and cooldown of Vulcan's turret and abilities."},
+ "Alternator Mod (Vulcan)":{stats:[],passive:"Alters Vulcan's firing pattern, alternating shots for extra uptime."},
+ "Shrapnel Mod (Vulcan)":{stats:[],passive:"Inferno Cannon applies a damage-over-time, hitting several times over a few seconds."}
 };
 var ITEM_ALIAS={}; // reserved for future name variants
 var ROLE_VAR = {Mid:"--mid",Carry:"--carry",Support:"--support",Solo:"--solo",Jungle:"--jungle"};
@@ -1766,7 +2066,7 @@ function renderItems(){
     var note=store.items[it[0]];
     var sub=d?d.passive:(note?note:it[1]);
     row.innerHTML=
-      '<div class="iico">'+(ITEM_ICON[it[1]]||"◆")+'</div>'+
+      '<div class="iico">'+itemMed(it)+'</div>'+
       '<div style="min-width:0"><div class="inm">'+esc(it[0])+'</div><div class="idesc">'+esc(sub)+'</div></div>'+
       '<div class="cost'+(it[2]===0?" free":"")+'">'+(it[2]===0?"Free":'<span style="opacity:.7">◈</span>'+it[2].toLocaleString())+'</div>';
     row.onclick=function(){openItem(it);};
@@ -1792,7 +2092,7 @@ function openItem(it){
     : '<div class="dt-block"><h3>Passive / Effect</h3><div class="abil-empty" style="border:none;padding:0;text-align:left;color:var(--ink-faint)">No effect details seeded for this item yet — add your own below.</div></div>';
   s.innerHTML=
     '<div class="dt-head">'+
-      '<div class="dt-med" style="--rc:var(--gold);font-size:26px;color:#241a06">'+(ITEM_ICON[it[1]]||"◆")+'</div>'+
+      '<div class="dt-med" style="--rc:var(--gold);font-size:26px;color:#241a06">'+itemMed(it)+'</div>'+
       '<div style="flex:1;min-width:0"><h2 style="font-size:20px">'+esc(it[0])+'</h2><div class="dt-tags"><span class="badge">'+it[1]+'</span></div></div>'+
       '<button class="close-x" id="closeSheet">✕</button>'+
     '</div>'+
