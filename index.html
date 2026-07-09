@@ -1205,6 +1205,20 @@ var ABIL_FULL = {
   {n:"Mending Waters",d:"Fire a water wave that damages enemies, then bounces between allies, Healing and Shielding them.",s:[["Damage","65 / 95 / 125 / 155 / 185"],["Heal","15 / 25 / 35 / 45 / 55"],["Shield","40 / 65 / 90 / 115 / 140"],["Range","9.6m"],["Cost","3 Omi"]]},
   {n:"Riptide",d:"Create a water ring that Knocks Back on entry; allies travel further gaining Move Speed and Protections, enemies are Slowed.",s:[["Move Speed","10–20%"],["Protections","20 / 25 / 30 / 35 / 40"],["Slow","10%"],["Range","9.6m"],["Cost","3 Omi"]]},
   {n:"River's Rebuke",d:"Conjure 2 walls of water that block movement and projectiles, then crash down for Magical Damage, Tremble and a decaying Slow.",s:[["Damage","250 / 320 / 390 / 460 / 530"],["Tremble","2s"],["Slow","60% (decaying)"],["Range","15m"],["Cooldown","120s"]]}
+ ],
+ "Cu Chulainn":[
+  {n:"Berserk",d:"Abilities consume Rage (regen stops at 25). Gain Rage on ability hits (+8 vs gods, +1 per basic, +0.5 when you or allies take damage). Above 85 Rage for 2s you go Berserk — gaining Power and a Health Shield, and your abilities change form.",s:[],notes:"Per-level numbers pending — this god's Smite 2 wiki page isn't published yet."},
+  {n:"Barbed Spear / Ground Slam",d:"Normal: thrust your spear, damaging enemies in front, stunning weaker minions and applying anti-heal barbs (5s); hitting minions/gods restores Rage. Berserk: slam your arms down, damaging and Rooting enemies in front (costs no Rage).",s:[]},
+  {n:"Vent Anger",d:"Unleash superheated steam, dealing damage over time; in Berserk form nearby enemies are also burned. Helps manage your Rage.",s:[]},
+  {n:"Salmon's Leap / Furious Charge",d:"Normal: leap over your spear to a location, damaging enemies in the area. Berserk: dash forward, damaging, Stunning and Knocking Back enemies hit.",s:[]},
+  {n:"Spear of Mortal Pain / War Cry",d:"Swing your spear around you, damaging enemies; hitting one restores Rage and transforms you into Berserk with a War Cry that damages nearby enemies.",s:[]}
+ ],
+ "Xing Tian":[
+  {n:"Smouldering Rage",d:"Each time an ability hits an enemy, gain a stack of Smouldering Rage; each stack grants HP5 and temporary maximum Health for 18s.",s:[],notes:"Per-level numbers pending — this god's Smite 2 wiki page isn't published yet."},
+  {n:"Furious Roar",d:"Roar in a cone, damaging enemies and reducing their basic-attack damage; they also take damage over time based on their maximum health.",s:[]},
+  {n:"Hook Slam",d:"Throw a hook and slam down, damaging enemies where you land.",s:[]},
+  {n:"Sky-Cutting Axe",d:"Leap across the battlefield, damaging nearby enemies — his main mobility tool.",s:[]},
+  {n:"Whirlwind of Rage and Steel",d:"Grab an enemy and spin, dealing damage to everyone around you; the grabbed target is immune to other crowd control while held, then flung away.",s:[]}
  ]
 };
 
@@ -1347,7 +1361,40 @@ var ITEM_DESC = {
  "Sphere of Negation":{stats:[["Physical Prot.","+"],["Magical Prot.","+"]],passive:"Periodically blocks the next hard crowd-control effect against you."},
  "Triton's Conch":{stats:[["Intelligence","+"],["MP5","+"]],passive:"Strong mana and health sustain for early-game mages and guardians."},
  "Helm of Radiance":{stats:[["Magical Prot.","+"],["Intelligence","+"]],passive:"Emits a burning light aura and grants power on a shield break."},
- "Golden Blade":{stats:[["Strength","+"],["Attack Speed","+"]],passive:"Basic attacks grant bonus gold and a movement-speed buff on a cooldown."}
+ "Golden Blade":{stats:[["Strength","+"],["Attack Speed","+"]],passive:"Basic attacks grant bonus gold and a movement-speed buff on a cooldown."},
+ "Blood-Bound Book":{stats:[["Intelligence","70"],["Magical Lifesteal","7.5%"]],passive:"Active — gain a Health Shield (7.5% max HP + 75% of item Intelligence) for 6s; while shielded, +10% lifesteal. A god kill cuts the cooldown 25%. Cooldown 80s."},
+ "Barbed Carver":{stats:[["Strength","40"],["Physical Lifesteal","7.5%"]],passive:"Ability hits apply Jagged Wounds (max 3, 5s); each stack makes your attacks and abilities deal +8% (+1% per 10% lifesteal) bonus physical damage."},
+ "Daybreak Gavel":{stats:[["Health","300"],["Adaptive","+60 Str / +80 Int"]],passive:"Each unique god your healing touches grants a stack (max 4). Casting a non-healing ability spends the stacks for +13 Str / +16 Int each for 8s. (Healer item.)"},
+ "Mercury's Talaria":{stats:[["Movement","12"],["Adaptive","+40 Str / +70 Int"]],passive:"Out of combat, moving stores energy; your next non-ultimate ability deals up to +8% damage (up to +10% for movement abilities)."},
+ "Nimble Ring":{stats:[["Intelligence","35"],["Attack Speed","20%"],["Magical Lifesteal","7.5%"]],passive:"For every 10 Intelligence, gain +1 Attack Damage and +1% Attack Speed."},
+ "Lernaean Bow":{stats:[["Strength","40"],["Attack Speed","30%"]],passive:"Active — fire 3 arrows piercing enemies in a 10.5m line, each for 40% of your attack damage (can crit). Cooldown 30s."},
+ "Dagger of Frenzy":{stats:[["Attack Damage","25"],["Attack Speed","25%"]],passive:"Active — gain +10 (+4/lvl) Attack Damage and +20% (+1%/lvl) Attack Speed for 6 attacks; refreshes on god kill. Cooldown 15s."},
+ "Oath-Sworn Spear":{stats:[["Strength","50"]],passive:"Ability hits reduce the target's Physical Protection by 1 per your level for 4s (up to -20 at level 20)."},
+ "Necronomicon":{stats:[["Intelligence","50"],["Mana","300"],["MP5","5"]],passive:"God kill or assist grants a stack of +30 Intelligence (max 6). Lose 4 stacks on death."},
+ "Bragi's Harp":{stats:[["Strength","35"],["Intelligence","25"],["Attack Speed","10%"]],passive:"Attacks deal +10 (+3/lvl) bonus magical damage. Structures and jungle bosses take half."},
+ "The Reaper":{stats:[["Strength","45"],["Physical Lifesteal","7.5%"],["Penetration","10"]],passive:"God kill: heal 15% of the slain god's max health (7.5% on assist); also 15% on kill/assist during Moonlight Phase."},
+ "Tyrfing":{stats:[["Strength","25"],["Attack Damage","25"],["Attack Speed","10%"]],passive:"Attacks deal +15 bonus physical damage; hitting a god adds +15 for 4s, stacking +1 per 4 levels (max 6, up to +105). Doesn't crit."},
+ "Ancient Signet":{stats:[["Intelligence","90"],["Mana","250"]],passive:"Ability hits deal +20 (+12/lvl) bonus magical damage. A minion kill/assist reduces a cooldown by 2s (15s internal)."},
+ "Gluttonous Grimoire":{stats:[["Intelligence","55"],["Health","150"],["Magical Lifesteal","7.5%"],["Penetration","10%"]],passive:"Store 25% of your lifesteal healing as bonus magical damage on your next attack (40% while at full health; caps at 33% of max HP)."},
+ "Arondight":{stats:[["Strength","55"],["Cooldown Rate","15"]],passive:"Active — reveal enemy gods within 17.6m for 6s (through stealth) and gain +25% move speed; your first hit on a revealed god deals +50 (+50% Str). Cooldown 60s."},
+ "Sun Beam Bow":{stats:[["Attack Damage","20"],["Attack Speed","10%"],["Adaptive","+20 Str / +40 Int"]],passive:"Active — toggle to fire +2 projectiles per attack (10 + 30% attack damage as magical); drains 5% max mana per second. Structures/bosses take reduced damage."},
+ "Eros' Bow":{stats:[["Health","300"],["Attack Speed","30%"]],passive:"Active — mark an ally; your basic-attack hits heal the marked ally for 2% of your max health (1s cooldown). Mark breaks beyond 20m."},
+ "Bracer of The Abyss":{stats:[["Intelligence","60"],["Attack Speed","30%"]],passive:"Hitting enemy gods or jungle bosses grants +8 Attack Damage for 10s (stacks up to 8 → +64)."},
+ "Death Metal":{stats:[["Strength","35"],["Intelligence","40"],["Crit Chance","20%"]],passive:"Active — lose all Intelligence, gain 66% of it as Strength plus +25% crit chance for 6s. Cooldown 45s."},
+ "The Cosmic Horror":{stats:[["Intelligence","55"],["Penetration","10"],["Echo","20"]],passive:"Echo above Cooldown Rate: +20% Echo damage. Echo below it: +35 Intelligence. Equal: both."},
+ "Avenging Blade":{stats:[["Strength","60"],["Health","200"]],passive:"Attacking a god shreds -3.5% protections (4s, max 3); doubled if that god is in the jungle or has healed recently (up to -21%)."},
+ "Riptalon":{stats:[["Attack Damage","20"],["Attack Speed","20%"],["Physical Lifesteal","7.5%"],["Penetration","10%"]],passive:"Above 50% health: +10% attack damage. Below 50%: +25% attack damage and +7.5% extra lifesteal."},
+ "Tekko-Kagi":{stats:[["Strength","35"],["Attack Speed","20%"],["Penetration","10"]],passive:"Using an ability grants Momentum: +7% movement speed for 8s (stacks up to 3 → +21%)."},
+ "Musashi's Dual Swords":{stats:[["Strength","35"],["Crit Chance","30%"]],passive:"Critical strikes grant +15% movement speed for 5s."},
+ "Damaru":{stats:[["Strength","35"],["Crit Chance","20%"],["Echo","20"]],passive:"Critical strikes: +8% ability damage for 5s (max 3). Echo triggers: +8% attack damage for 5s (max 3)."},
+ "Demon Blade":{stats:[["Strength","30"],["Attack Speed","15%"],["Crit Chance","15%"]],passive:"Critical strikes grant +30% attack speed for 3s."},
+ "Pendulum Blade":{stats:[["Strength","30"],["Penetration","10%"],["Cooldown Rate","10"]],passive:"Active — reduce your ability cooldowns by 4s (ultimates included). Cooldown 40s."},
+ "Jade Scepter":{stats:[["Intelligence","100"],["Health","250"]],passive:"Active — place a jade current; after 1s it erupts, knocking gods away (enemies pulled toward you). Cooldown 60s."},
+ "Staff of Myrddin":{stats:[["Intelligence","75"],["Cooldown Rate","10"]],passive:"Active — your next non-ultimate ability has no cooldown. Cooldown 80s."},
+ "Dreamer's Idol":{stats:[["Intelligence","130"],["Penetration","10%"]],passive:"Active — +25% Intelligence and immunity to displacement for 10s. Cooldown 120s."},
+ "Avatar's Parashu":{stats:[["Strength","90"],["Penetration","10%"]],passive:"Active — +25% Strength and immunity to displacement for 10s. Cooldown 120s."},
+ "Totem of Death":{stats:[["Intelligence","60"],["Cooldown Rate","15"]],passive:"Ability hits on gods/bosses apply Piercing: -6% protections for 4s (stacks up to 5 → -30%)."},
+ "Vital Amplifier":{stats:[["Health","200"],["HP5","3"],["Attack Speed","10%"],["Adaptive","+30 Str / +45 Int"]],passive:"Healing yourself or an ally with an ability grants +7.5% attack speed and +5% attack damage for 6s (max 3)."}
 };
 var ITEM_ALIAS={}; // reserved for future name variants
 var ROLE_VAR = {Mid:"--mid",Carry:"--carry",Support:"--support",Solo:"--solo",Jungle:"--jungle"};
@@ -1408,7 +1455,7 @@ var iState={cat:"All",q:"",attr:"All"};
    Offense/Hybrid/Starter tagged S(trength)/I(ntelligence)/H(ybrid) below; Defense & actives auto. */
 var ITEM_ATTR = {
  // offense
- "Blood-Bound Book":"I","Book of Thoth":"I","Bancroft's Talon":"I","Eros' Bow":"S","Sun Beam Bow":"S","Jotunn's Revenge":"S","Chronos' Pendant":"I","Transcendence":"S","Odysseus' Bow":"S","Rage":"S","Hydra's Lament":"S","Barbed Carver":"S","Daybreak Gavel":"I","Bracer of The Abyss":"S","Mercury's Talaria":"S","Vital Amplifier":"H","Nimble Ring":"S","Devourer's Gauntlet":"S","Divine Ruin":"I","Lernaean Bow":"S","Dagger of Frenzy":"S","Soul Gem":"I","Bloodforge":"S","The Executioner":"S","Gem of Focus":"I","Polynomicon":"I","Oath-Sworn Spear":"S","Necronomicon":"I","Bragi's Harp":"I","Typhon's Heart":"I","The Reaper":"S","Tyrfing":"S","Ancient Signet":"I","Gluttonous Grimoire":"I","Qin's Blade":"S","Death Metal":"S","Hastened Fatalis":"S","Arondight":"S","Spear of Desolation":"I","The Cosmic Horror":"I","Avenging Blade":"S","Riptalon":"S","Tekko-Kagi":"S","Spear Of The Magus":"I","Musashi's Dual Swords":"S","Doom Orb":"I","Damaru":"I","Demon Blade":"S","Pendulum Blade":"S","Jade Scepter":"I","The Crusher":"S","Totem of Death":"I","The World Stone":"I","Omen Drum":"H","Staff of Myrddin":"I","Deathbringer":"S","Soul Reaver":"I","Rod of Tahuti":"I","Heartseeker":"I","Obsidian Shard":"I","Titan's Bane":"S","Dreamer's Idol":"I","Avatar's Parashu":"S",
+ "Blood-Bound Book":"I","Book of Thoth":"I","Bancroft's Talon":"I","Eros' Bow":"S","Sun Beam Bow":"H","Jotunn's Revenge":"S","Chronos' Pendant":"I","Transcendence":"S","Odysseus' Bow":"S","Rage":"S","Hydra's Lament":"S","Barbed Carver":"S","Daybreak Gavel":"H","Bracer of The Abyss":"I","Mercury's Talaria":"H","Vital Amplifier":"H","Nimble Ring":"I","Devourer's Gauntlet":"S","Divine Ruin":"I","Lernaean Bow":"S","Dagger of Frenzy":"S","Soul Gem":"I","Bloodforge":"S","The Executioner":"S","Gem of Focus":"I","Polynomicon":"I","Oath-Sworn Spear":"S","Necronomicon":"I","Bragi's Harp":"H","Typhon's Heart":"I","The Reaper":"S","Tyrfing":"S","Ancient Signet":"I","Gluttonous Grimoire":"I","Qin's Blade":"S","Death Metal":"S","Hastened Fatalis":"S","Arondight":"S","Spear of Desolation":"I","The Cosmic Horror":"I","Avenging Blade":"S","Riptalon":"S","Tekko-Kagi":"S","Spear Of The Magus":"I","Musashi's Dual Swords":"S","Doom Orb":"I","Damaru":"S","Demon Blade":"S","Pendulum Blade":"S","Jade Scepter":"I","The Crusher":"S","Totem of Death":"I","The World Stone":"I","Omen Drum":"H","Staff of Myrddin":"I","Deathbringer":"S","Soul Reaver":"I","Rod of Tahuti":"I","Heartseeker":"I","Obsidian Shard":"I","Titan's Bane":"S","Dreamer's Idol":"I","Avatar's Parashu":"S",
  // hybrid
  "Rod Of Asclepius":"I","Scepter of Dominion":"I","Shield Splitter":"S","Lifebinder":"I","Golden Blade":"S","Gem of Isolation":"I","Eye of the Storm":"I","Helm of Radiance":"I","Brawler's Beat Stick":"S","Runeforged Hammer":"S","Eye of Erebus":"I","Sanguine Lash":"I","Shifter's Shield":"S","Helm of Darkness":"S","Triton's Conch":"I","Sphere of Negation":"H","Wish-Granting Pearl":"I",
  // starters
