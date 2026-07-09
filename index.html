@@ -1248,7 +1248,9 @@ var ITEMS = [
  // God-specific
  ["Genie's Lamp (Aladdin)","God-Specific",0],["Training Grounds (Hua Mulan)","God-Specific",0],["Baron's Brew (Baron Samedi)","God-Specific",100],
  ["Magic Acorn (Ratatoskr)","God-Specific",0],["Lively Acorn (Ratatoskr)","God-Specific",600],["Ashwhorl Acorn (Ratatoskr)","God-Specific",2000],["Briskberry Acorn (Ratatoskr)","God-Specific",2000],["Thistlethorn Acorn (Ratatoskr)","God-Specific",2000],
- ["Masterwork Mod (Vulcan)","God-Specific",0],["Thermal Mod (Vulcan)","God-Specific",0],["Surplus Mod (Vulcan)","God-Specific",0],["Seismic Mod (Vulcan)","God-Specific",0],["Resonator Mod (Vulcan)","God-Specific",0],["Dual Mod (Vulcan)","God-Specific",0],["Efficiency Mod (Vulcan)","God-Specific",0],["Alternator Mod (Vulcan)","God-Specific",0],["Shrapnel Mod (Vulcan)","God-Specific",0]
+ ["Masterwork Mod (Vulcan)","God-Specific",0],["Thermal Mod (Vulcan)","God-Specific",0],["Surplus Mod (Vulcan)","God-Specific",0],["Seismic Mod (Vulcan)","God-Specific",0],["Resonator Mod (Vulcan)","God-Specific",0],["Dual Mod (Vulcan)","God-Specific",0],["Efficiency Mod (Vulcan)","God-Specific",0],["Alternator Mod (Vulcan)","God-Specific",0],["Shrapnel Mod (Vulcan)","God-Specific",0],
+ // Components (tier 1/2 build pieces) — stats/cost pending wiki
+ ["Adamantine Sickle","Component",null], ["Adroit Ring","Component",null], ["Axe","Component",null], ["Battle Axe","Component",null], ["Bow","Component",null], ["Bowl Drum","Component",null], ["Caestus","Component",null], ["Captain's Ring","Component",null], ["Circle of Protection","Component",null], ["Circlet","Component",null], ["Cleric's Cloak","Component",null], ["Combat Boots","Component",null], ["Cursed Sickle","Component",null], ["Enchanted Bracelet","Component",null], ["Engraved Guard","Component",null], ["Evil Eye","Component",null], ["Flaming Pearl","Component",null], ["Gem","Component",null], ["Hooked Sword","Component",null], ["Hunter's Bow","Component",null], ["Infused Axe","Component",null], ["Killing Stone","Component",null], ["Kopesh","Component",null], ["Legionnaire Armor","Component",null], ["Lucerne Hammer","Component",null], ["Mana Tome","Component",null], ["Manchu Bow","Component",null], ["Medal of Defense","Component",null], ["Medal of Disruption","Component",null], ["Medallion","Component",null], ["Mote of Chaos","Component",null], ["Odigba","Component",null], ["Olmec Blue","Component",null], ["Oracle Staff","Component",null], ["Plated Metal","Component",null], ["Reliquary","Component",null], ["Ring","Component",null], ["Ring of Dispel","Component",null], ["Rune","Component",null], ["Runic Hide","Component",null], ["Sabre","Component",null], ["Sage's Ring","Component",null], ["Sash","Component",null], ["Scythe","Component",null], ["Shield","Component",null], ["Skeggox","Component",null], ["Soul Reliquary","Component",null], ["Stalwart Sigil","Component",null], ["Survivor's Sash","Component",null], ["Veve Charm","Component",null], ["Void Shard","Component",null], ["Zither","Component",null]
 ];
 
 var ITEM_ICON = {Relic:"✦",Curio:"❖",Consumable:"⚗",Starter:"◈",Offense:"⚔",Defense:"🛡",Hybrid:"⚖","God-Specific":"★"};
@@ -1445,7 +1447,59 @@ var ITEM_ICONS = {
  "Wish-Granting Pearl":"items/wish-granting-pearl.png",
  "Wyrmskin Hide":"items/wyrmskin-hide.png",
  "Xibalban Effigy":"items/xibalban-effigy.png",
- "Yogi's Necklace":"items/yogi-s-necklace.png"
+ "Yogi's Necklace":"items/yogi-s-necklace.png",
+"Adamantine Sickle":"items/adamantine-sickle.png",
+ "Adroit Ring":"items/adroit-ring.png",
+ "Axe":"items/axe.png",
+ "Battle Axe":"items/battle-axe.png",
+ "Bow":"items/bow.png",
+ "Bowl Drum":"items/bowl-drum.png",
+ "Caestus":"items/caestus.png",
+ "Captain's Ring":"items/captain-s-ring.png",
+ "Circle of Protection":"items/circle-of-protection.png",
+ "Circlet":"items/circlet.png",
+ "Cleric's Cloak":"items/cleric-s-cloak.png",
+ "Combat Boots":"items/combat-boots.png",
+ "Cursed Sickle":"items/cursed-sickle.png",
+ "Enchanted Bracelet":"items/enchanted-bracelet.png",
+ "Engraved Guard":"items/engraved-guard.png",
+ "Evil Eye":"items/evil-eye.png",
+ "Flaming Pearl":"items/flaming-pearl.png",
+ "Gem":"items/gem.png",
+ "Hooked Sword":"items/hooked-sword.png",
+ "Hunter's Bow":"items/hunter-s-bow.png",
+ "Infused Axe":"items/infused-axe.png",
+ "Killing Stone":"items/killing-stone.png",
+ "Kopesh":"items/kopesh.png",
+ "Legionnaire Armor":"items/legionnaire-armor.png",
+ "Lucerne Hammer":"items/lucerne-hammer.png",
+ "Mana Tome":"items/mana-tome.png",
+ "Manchu Bow":"items/manchu-bow.png",
+ "Medal of Defense":"items/medal-of-defense.png",
+ "Medal of Disruption":"items/medal-of-disruption.png",
+ "Medallion":"items/medallion.png",
+ "Mote of Chaos":"items/mote-of-chaos.png",
+ "Odigba":"items/odigba.png",
+ "Olmec Blue":"items/olmec-blue.png",
+ "Oracle Staff":"items/oracle-staff.png",
+ "Plated Metal":"items/plated-metal.png",
+ "Reliquary":"items/reliquary.png",
+ "Ring":"items/ring.png",
+ "Ring of Dispel":"items/ring-of-dispel.png",
+ "Rune":"items/rune.png",
+ "Runic Hide":"items/runic-hide.png",
+ "Sabre":"items/sabre.png",
+ "Sage's Ring":"items/sage-s-ring.png",
+ "Sash":"items/sash.png",
+ "Scythe":"items/scythe.png",
+ "Shield":"items/shield.png",
+ "Skeggox":"items/skeggox.png",
+ "Soul Reliquary":"items/soul-reliquary.png",
+ "Stalwart Sigil":"items/stalwart-sigil.png",
+ "Survivor's Sash":"items/survivor-s-sash.png",
+ "Veve Charm":"items/veve-charm.png",
+ "Void Shard":"items/void-shard.png",
+ "Zither":"items/zither.png"
 };
 if(typeof window!=="undefined"&&window.ITEM_ICONS){for(var _ik in window.ITEM_ICONS){if(window.ITEM_ICONS.hasOwnProperty(_ik))ITEM_ICONS[_ik]=window.ITEM_ICONS[_ik];}}
 function itemSlug(name){return name.toLowerCase().replace(/\([^)]*\)/g,"").replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"");}
@@ -2029,7 +2083,7 @@ function closeSheet(){$("#scrim").classList.remove("open");$("#sheet").classList
 /* ================= ITEMS VIEW ================= */
 function buildItemChips(){
   var box=$("#itemChips");box.innerHTML="";
-  var cats=["All","Starter","Offense","Defense","Hybrid","Relic","Curio","Consumable","God-Specific"];
+  var cats=["All","Starter","Component","Offense","Defense","Hybrid","Relic","Curio","Consumable","God-Specific"];
   cats.forEach(function(c){
     var b=el("button","chip cat");b.setAttribute("aria-pressed",c===iState.cat);
     b.textContent=c==="All"?"All items":c;
@@ -2068,7 +2122,7 @@ function renderItems(){
     row.innerHTML=
       '<div class="iico">'+itemMed(it)+'</div>'+
       '<div style="min-width:0"><div class="inm">'+esc(it[0])+'</div><div class="idesc">'+esc(sub)+'</div></div>'+
-      '<div class="cost'+(it[2]===0?" free":"")+'">'+(it[2]===0?"Free":'<span style="opacity:.7">◈</span>'+it[2].toLocaleString())+'</div>';
+      '<div class="cost'+(it[2]===0||it[2]==null?" free":"")+'">'+(it[2]==null?"—":it[2]===0?"Free":'<span style="opacity:.7">◈</span>'+it[2].toLocaleString())+'</div>';
     row.onclick=function(){openItem(it);};
     list.appendChild(row);
   });
@@ -2083,9 +2137,9 @@ function openItem(it){
   if(d&&d.stats&&d.stats.length){
     statsHTML='<div class="dt-block"><h3>Stats</h3><div class="kv">'+d.stats.map(function(r){
       return '<div class="row"><span class="k">'+esc(r[0])+'</span><span class="v">'+esc(r[1])+'</span></div>';
-    }).join("")+'<div class="row"><span class="k">Cost</span><span class="v" style="color:var(--gold)">'+(it[2]===0?"Free":"◈ "+it[2].toLocaleString())+'</span></div></div></div>';
+    }).join("")+'<div class="row"><span class="k">Cost</span><span class="v" style="color:var(--gold)">'+(it[2]==null?"—":it[2]===0?"Free":"◈ "+it[2].toLocaleString())+'</span></div></div></div>';
   }else{
-    statsHTML='<div class="dt-block"><h3>Cost</h3><div style="font-weight:700;color:var(--gold);font-size:16px">'+(it[2]===0?"Free":"◈ "+it[2].toLocaleString()+" gold")+'</div></div>';
+    statsHTML='<div class="dt-block"><h3>Cost</h3><div style="font-weight:700;color:var(--gold);font-size:16px">'+(it[2]==null?"Cost pending":it[2]===0?"Free":"◈ "+it[2].toLocaleString()+" gold")+'</div></div>';
   }
   var passHTML=d
     ? '<div class="dt-block"><h3>Passive / Effect</h3><div class="abdesc" style="font-size:14px;color:var(--ink)">'+esc(d.passive)+'</div></div>'
