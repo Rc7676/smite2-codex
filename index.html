@@ -1892,7 +1892,7 @@ function doImport(){
   catch(e){toast("That code wasn't valid");}
 }
 function doReset(){
-  if(window.confirm("Erase all tracking data? This can't be undone.")){store={gods:{}};save();refreshAll();toast("All progress reset");}
+  if(window.confirm("Erase all tracking data? This can't be undone.")){store={gods:{},items:{}};save();refreshAll();toast("All progress reset");}
 }
 function refreshAll(){renderGods();renderItems();renderTracked();updateCounts();}
 
@@ -1923,7 +1923,38 @@ document.addEventListener("keydown",function(e){if(e.key==="Escape")closeSheet()
 })();
 </script>
 
-<script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('./sw.js').catch(function(){});});}</script>
+<script>
+if('serviceWorker' in navigator){
+  window.addEventListener('load',function(){
+    navigator.serviceWorker.register('./sw.js').then(function(reg){
+      function notify(worker){
+        if(document.getElementById('sw-update'))return;
+        var b=document.createElement('div');
+        b.id='sw-update';b.setAttribute('role','status');
+        b.style.cssText='position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:200;display:flex;align-items:center;gap:12px;max-width:calc(100% - 28px);padding:11px 13px 11px 16px;border-radius:12px;font:600 13px/1.3 "Segoe UI",Roboto,system-ui,sans-serif;color:#eae9f5;background:#1b2138;border:1px solid #2b3357;box-shadow:0 10px 30px -12px rgba(0,0,0,.7)';
+        b.appendChild(document.createTextNode('New version available'));
+        var btn=document.createElement('button');
+        btn.textContent='Refresh';
+        btn.style.cssText='appearance:none;cursor:pointer;font:700 13px/1 "Segoe UI",Roboto,system-ui,sans-serif;color:#241a06;background:#e7c274;border:none;padding:8px 14px;border-radius:8px';
+        btn.onclick=function(){btn.disabled=true;btn.textContent='Updating…';worker.postMessage('SKIP_WAITING');};
+        b.appendChild(btn);
+        document.body.appendChild(b);
+      }
+      if(reg.waiting && navigator.serviceWorker.controller)notify(reg.waiting);
+      reg.addEventListener('updatefound',function(){
+        var nw=reg.installing;if(!nw)return;
+        nw.addEventListener('statechange',function(){
+          if(nw.state==='installed' && navigator.serviceWorker.controller)notify(nw);
+        });
+      });
+    }).catch(function(){});
+    var refreshing=false;
+    navigator.serviceWorker.addEventListener('controllerchange',function(){
+      if(refreshing)return;refreshing=true;window.location.reload();
+    });
+  });
+}
+</script>
 
 </body>
 </html>
